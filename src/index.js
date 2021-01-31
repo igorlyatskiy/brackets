@@ -19,33 +19,59 @@ module.exports = function check(str, bracketsConfig) {
             bracket++;
             newArray.push("(");
         }
+        if (str[i] == "|") {
+            longConst++;
+            newArray.push("|");
+        }
         if (str[i] == "}") {
             figure--;
-            if (newArray[newArray.length - 1] != "{") {
-                return false;
-                flag = false;
-            } else newArray.pop();
+            while (newArray[newArray.length - 1] != "{") {
+                if (
+                    newArray[newArray.length - 1] != "|" &&
+                    longConst % 2 != 0
+                ) {
+                    return false;
+                    flag = false;
+                } else newArray.pop();
+            }
+            newArray.pop();
         }
         if (str[i] == "]") {
             square--;
-            if (newArray[newArray.length - 1] != "[") {
-                return false;
-                flag = false;
-            } else newArray.pop();
+            while (newArray[newArray.length - 1] != "[") {
+                if (
+                    newArray[newArray.length - 1] != "|" &&
+                    longConst % 2 != 0
+                ) {
+                    return false;
+                    flag = false;
+                } else newArray.pop();
+            }
+            newArray.pop();
         }
         if (str[i] == ")") {
             bracket--;
-            if (newArray[newArray.length - 1] != "(") {
-                return false;
-                flag = false;
-            } else newArray.pop();
+            while (newArray[newArray.length - 1] != "(") {
+                if (
+                    newArray[newArray.length - 1] != "|" &&
+                    longConst % 2 != 0
+                ) {
+                    return false;
+                    flag = false;
+                } else newArray.pop();
+            }
+            newArray.pop();
+        }
+        if (str[i] == "|" && longConst % 2 == 1) {
+            longConst--;
+            newArray.push("|");
         }
         if (bracket < 0 || square < 0 || figure < 0) {
             return false;
         }
     }
     if (bracket != 0 || square != 0 || figure != 0) return false;
-
+    longConst = 0;
     let unicArray = [];
     for (let i = 0; i < bracketsConfig.length; i++) {
         for (let j = 0; j < bracketsConfig[i].length; j++) {
